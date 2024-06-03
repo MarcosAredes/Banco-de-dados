@@ -1,0 +1,249 @@
+A arquitetura de software:	
+
+	 conhecida como MVC (Model-View-Controller) é um padrão amplamente utilizado para a organização de aplicações,
+	 especialmente aquelas com interfaces de usuário. Vamos detalhar cada componente do MVC:
+
+	1. View (Visão)
+		A View é a camada responsável pela interface com o usuário. É o que o usuário vê e interage diretamente. 
+		Esta camada apresenta os dados ao usuário e captura as suas interações para serem enviadas ao Controller.
+
+		Responsabilidades: Renderizar o conteúdo que será exibido ao usuário, como páginas HTML, estilos CSS, e interatividade com JavaScript/jQuery.
+		Tecnologias: HTML, CSS, JavaScript, jQuery, frameworks modernos como React, Angular, Vue.js.
+		Exemplo: Uma página HTML que exibe uma lista de produtos.
+
+	2. Controller (Controle)
+		O Controller atua como um intermediário entre a View e o Model. Ele recebe as entradas do usuário através da View, 
+		processa essas entradas de acordo com as regras de negócio e interage com o Model para obter ou modificar dados.
+
+		Responsabilidades: Processar as requisições, aplicar as regras de negócio, chamar métodos no Model para manipulação de dados, e decidir qual View deve ser exibida.
+		Linguagens Usadas: PHP, Java, C#, Ruby, Python, entre outras.
+		Exemplo: Um método em um Controller que recebe uma requisição para adicionar um novo produto, valida os dados, chama o Model para salvar o produto e redireciona para uma página de confirmação.
+
+	3. Model (Modelo)
+		O Model representa os dados da aplicação e a lógica de negócios associada a esses dados. Ele é responsável por acessar a base de dados, 
+		manipular os dados e garantir a integridade e consistência das informações.
+
+		Responsabilidades: Definir as estruturas de dados, realizar operações de CRUD (Create, Read, Update, Delete), e aplicar regras de negócio relacionadas aos dados.
+		Representação: As classes de modelo geralmente mapeiam para tabelas no banco de dados.
+		Exemplo: Uma classe Produto que define as propriedades de um produto e métodos para salvar, atualizar, ou buscar produtos no banco de dados.
+
+
+Modelagem Lógica e Física:
+	
+	A modelagem de dados é um passo crucial no desenvolvimento de sistemas de informação, abrangendo tanto a modelagem lógica 
+	quanto a modelagem física dos dados.
+
+	Modelagem Lógica:
+	
+		A modelagem lógica é uma representação abstrata e conceitual dos dados de uma organização, independente de um Sistema Gerenciador de 
+		Banco de Dados (SGBD) específico. Ela se concentra na estrutura dos dados e nas relações entre eles, usando conceitos como entidades, atributos e 
+		relacionamentos.
+	
+		Características da Modelagem Lógica:
+	
+		° Independente de SGBD: Não se preocupa com a implementação física dos dados, como o tipo de SGBD ou as especificidades de performance.
+		° Abstração de Dados: Define entidades (tabelas), atributos (colunas) e relacionamentos (associações entre tabelas).
+		° Normalização: Aplicação de regras para eliminar redundâncias e inconsistências, garantindo a integridade dos dados.
+	
+		Exemplo de Modelagem Lógica:
+	
+		Imagine um sistema de gerenciamento de uma livraria. A modelagem lógica poderia incluir as seguintes entidades e relacionamentos:
+
+		° Entidades: Livro, Autor, Editora, Cliente, Pedido.
+		° Atributos:
+			Livro: ID, Título, ISBN, Preço, ID_Editora.
+			Autor: ID, Nome, Data_de_Nascimento.
+			Editora: ID, Nome, Endereço.
+			Cliente: ID, Nome, Email, Telefone.
+			Pedido: ID, Data, ID_Cliente.
+	
+		° Relacionamentos:
+		
+			° Um Autor pode escrever vários Livros (Relacionamento de um para muitos).
+			° Um Livro é publicado por uma única Editora (Relacionamento de muitos para um).
+			° Um Cliente pode fazer vários Pedidos (Relacionamento de um para muitos).
+			° Um Pedido contém vários Livros (Relacionamento de muitos para muitos, geralmente representado por uma tabela associativa, como Pedido_Livro).
+	
+	Modelagem Física:
+		
+		A modelagem física traduz a modelagem lógica para um modelo específico de um SGBD, levando em conta as características e restrições da 
+		tecnologia utilizada. Ela detalha como os dados serão armazenados, acessados e gerenciados fisicamente.
+		
+		Características da Modelagem Física:
+		
+			° Dependente de SGBD: Específica para o tipo de banco de dados (por exemplo, MySQL, PostgreSQL, Oracle).
+			° Detalhamento Técnico: Inclui definições de tabelas, colunas, tipos de dados, índices, chaves primárias e estrangeiras, partições, etc.
+			° Otimização: Considera aspectos de performance como índices, normalização/desnormalização, e estratégias de armazenamento.
+		
+		Exemplo de Modelagem Física:
+			
+			Continuando com o exemplo da livraria, a modelagem física no MySQL poderia ser representada com scripts SQL:
+		
+				-- Criação da tabela Editora
+				CREATE TABLE Editora (
+   				ID INT AUTO_INCREMENT PRIMARY KEY,
+    				Nome VARCHAR(255) NOT NULL,
+   				Endereco VARCHAR(255)
+				);
+	
+
+				-- Criação da tabela Autor
+				CREATE TABLE Autor (
+   				ID INT AUTO_INCREMENT PRIMARY KEY,
+    				Nome VARCHAR(255) NOT NULL,
+    				Data_de_Nascimento DATE
+				);
+
+
+				-- Criação da tabela Livro
+				CREATE TABLE Livro (
+    				ID INT AUTO_INCREMENT PRIMARY KEY,
+    				Titulo VARCHAR(255) NOT NULL,
+    				ISBN VARCHAR(13) UNIQUE,
+    				Preco DECIMAL(10, 2),
+    				ID_Editora INT,
+    				FOREIGN KEY (ID_Editora) REFERENCES Editora(ID)
+				);
+
+
+				-- Criação da tabela Cliente
+				CREATE TABLE Cliente (
+   				ID INT AUTO_INCREMENT PRIMARY KEY,
+   				Nome VARCHAR(255) NOT NULL,
+    				Email VARCHAR(255) UNIQUE,
+    				Telefone VARCHAR(15)
+				);
+
+
+				-- Criação da tabela Pedido
+				CREATE TABLE Pedido (
+   				ID INT AUTO_INCREMENT PRIMARY KEY,
+    				Data DATE NOT NULL,
+    				ID_Cliente INT,
+    				FOREIGN KEY (ID_Cliente) REFERENCES Cliente(ID)
+				);
+
+
+				-- Criação da tabela associativa Pedido_Livro
+				CREATE TABLE Pedido_Livro (
+    				ID_Pedido INT,
+    				ID_Livro INT,
+    				Quantidade INT,
+    				PRIMARY KEY (ID_Pedido, ID_Livro),
+    				FOREIGN KEY (ID_Pedido) REFERENCES Pedido(ID),
+    				FOREIGN KEY (ID_Livro) REFERENCES Livro(ID)
+				);
+	
+	Resumo:
+		
+		° Modelagem Lógica: Foca na estrutura abstrata dos dados e suas inter-relações, independente do SGBD.
+		° Modelagem Física: Tradução da modelagem lógica para um esquema de banco de dados específico, considerando a implementação e performance no SGBD escolhido.
+
+	
+
+
+
+	/*
+Modelagem Básica - ENTIDADE = TABELA 
+CAMPOS = ATRIBUTOS*/
+
+CLIENTE
+
+NOME - CARACTER(30)
+CPF - NUMERICO(11)
+EMAIL - CARECTER(30)
+TELEFONE - CARACTER(30)
+ENDERECO - CARACTER(100)
+SEXO - CARACTER(1) 
+
+/* PROCESSO DE MODELAGEM */
+
+/* FASE 01 E 02 SÃO FEITAS PELO AD ADM DE DADOS*/
+
+MODELAGEM CONCEITUAL -- RASCUNHO
+MODELAGEM LÓGICA -- QUALQUER PROGRAMA DE MODELAGEM
+
+/* FASE 03 DBA/AD */ 
+
+MODELAGEM FÍSICA -- SCRIPTS DE BANCO
+
+
+/* INICIANDO MODELAGEM FISICA*/ 
+
+
+/* Criando o Banco de dados */ 
+
+CREATE DATABASE PROJETO; 
+
+/* Conectando-se ao Banco*/ 
+
+USE PROJETO; 
+
+/* Criando a tabela de CLIENTE*/
+
+CREATE TABLE CLIENTE(
+	NOME VARCHAR(30),
+	SEXO CHAR(1),
+	EMAIL VARCHAR(30),
+	CPF INT(11),
+	TELEFONE VARCHAR(30),
+	ENDERECO VARCHAR(100)
+	
+);
+
+
+/* Verificando as tabelas do banco */
+
+
+SHOW TABLES;
+
+
+/* Descobrindo como é a estrutura de uma TABELA  (campos) */
+
+
+DESC CLIENTE;
+
+
+
+
+
+
+/* Comparando o CHAR com VARCHAR (O profissional de Tunning) */
+
+
+Tipagem de tabelas de Banco de DADOS:
+
+Para caracteres literais (nomes, palavras, letras) usa o CHAR e VARCHAR;
+
+Para NUmeros temos INT e FLOAT sendo que o INT é (1, -3, 4, 5, 10) Numeros Inteiros, e o FLOAT é (0.0, 3.14, -2,718)  Numeros Reais;
+
+Para objetos como fotos e documentos usa o BLOB;
+
+Para textos extensos usa o TEXT;
+
+
+Diferença de CHAR para VARCHAR:
+Cada caracter = 1 byte
+
+
+No CHAR(10) Com o dado JOAO a quantidade de bytes vai ser 10by pois o tipo CHAR e um tipo de dado de 'Comprimento' fixo não variável.
+
+No VARCHAR(10) Com o dado JOAO a quantidade de bytes vai ser 4by pois o VARCHAR e e um tipo de dado de 'Comprimento' variável.
+
+
+Mas o CHAR e mais performatico não fica variando de tamanho então usa ele quando o numero de caracter não vai variar nunca 
+exemplo(MG, BA, RJ, SP, ES) Sendo todas unidade federativas sempre tem dois digitos
+Outro exemplo e o sexo da pessoa podendo ser decidido em um digito M ou F
+ 
+
+ENUM Utilizamos o tipo ENUM quando queremos limitar os dados em uma coluna
+
+
+
+
+
+
+
+
+
+
